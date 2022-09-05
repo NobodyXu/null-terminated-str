@@ -103,6 +103,12 @@ impl From<NullTerminatedString> for String {
     }
 }
 
+impl From<NullTerminatedString> for CString {
+    fn from(s: NullTerminatedString) -> CString {
+        s.0
+    }
+}
+
 impl Deref for NullTerminatedString {
     type Target = NullTerminatedStr;
 
