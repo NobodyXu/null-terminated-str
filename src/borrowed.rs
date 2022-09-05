@@ -19,7 +19,7 @@ const fn report_err() -> &'static NullTerminatedStr {
 pub struct NullTerminatedStr(CStr);
 
 impl NullTerminatedStr {
-    pub fn as_c_str(&self) -> &CStr {
+    pub const fn as_c_str(&self) -> &CStr {
         &self.0
     }
 
