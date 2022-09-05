@@ -190,3 +190,9 @@ impl AsRef<NullTerminatedStr> for NullTerminatedStr {
         self
     }
 }
+
+impl AsRef<str> for NullTerminatedStr {
+    fn as_ref(&self) -> &str {
+        self.deref()
+    }
+}
