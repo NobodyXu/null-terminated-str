@@ -3,6 +3,7 @@ use std::{
     ffi::CStr,
     fmt,
     ops::Deref,
+    os::raw::c_char,
     str::{from_utf8, from_utf8_unchecked, Utf8Error},
 };
 
@@ -21,6 +22,10 @@ pub struct NullTerminatedStr(CStr);
 impl NullTerminatedStr {
     pub const fn as_c_str(&self) -> &CStr {
         &self.0
+    }
+
+    pub const fn as_ptr(&self) -> *const c_char {
+        self.as_c_str().as_ptr()
     }
 
     /// # Safety
