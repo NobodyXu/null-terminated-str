@@ -91,6 +91,18 @@ impl From<String> for NullTerminatedString {
     }
 }
 
+impl From<NullTerminatedString> for String {
+    fn from(s: NullTerminatedString) -> String {
+        // bytes without trailing null byte
+        let bytes = s.0.into_bytes();
+        // Safety:
+        //
+        // NullTerminatedString contains valid utf-8 string,
+        // excluding the trailing null byte.
+        unsafe { String::from_utf8_unchecked(bytes) }
+    }
+}
+
 impl Deref for NullTerminatedString {
     type Target = NullTerminatedStr;
 
