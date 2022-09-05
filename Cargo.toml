@@ -2,7 +2,18 @@
 name = "null-terminated-str"
 version = "0.1.0"
 edition = "2021"
+rust-version = "1.63"
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+authors = ["Jiahao XU <Jiahao_XU@outlook.com>"]
+
+license = "MIT"
+description = """
+FFI-friendly utf-8 string, enabling const null-terminated str and caching
+of the non-terminated string to avoid frequent allocation.
+"""
+repository = "https://github.com/NobodyXu/null-terminated-str"
+
+keywords = ["ffi", "string", "null-terminated-string"]
+categories = ["api-bindings"]
 
 [dependencies]
