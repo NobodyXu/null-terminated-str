@@ -4,6 +4,8 @@ pub use borrowed::NullTerminatedStr;
 mod owned;
 pub use owned::{NullStringFromUtf8Error, NullTerminatedString};
 
+mod into_null_terminated_string;
+
 /// Create a null-terminated utf-8 str as an rvalue.
 /// Appends a NUL byte to the passed string.
 ///
