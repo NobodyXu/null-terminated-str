@@ -17,7 +17,7 @@ impl NullTerminatedStr {
     ///
     /// The `CStr` (excluding the null byte)
     /// must be valid utf-8 str.
-    pub const unsafe fn from_cstr(cstr: &CStr) -> &Self {
+    pub const unsafe fn from_cstr_unchecked(cstr: &CStr) -> &Self {
         // Safety: NullTerminatedStr is transparent
         // newtype of CStr
         &*(cstr as *const CStr as *const Self)
@@ -59,7 +59,7 @@ impl NullTerminatedStr {
             i += 1;
         }
 
-        unsafe { Self::from_cstr(CStr::from_bytes_with_nul_unchecked(bytes)) }
+        unsafe { Self::from_cstr_unchecked(CStr::from_bytes_with_nul_unchecked(bytes)) }
     }
 }
 
@@ -135,6 +135,6 @@ impl Deref for NullTerminatedString {
     type Target = NullTerminatedStr;
 
     fn deref(&self) -> &Self::Target {
-        unsafe { NullTerminatedStr::from_cstr(self.0.as_c_str()) }
+        unsafe { NullTerminatedStr::from_cstr_unchecked(self.0.as_c_str()) }
     }
 }
