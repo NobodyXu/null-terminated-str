@@ -105,3 +105,11 @@ impl fmt::Display for NullTerminatedStr {
         self.deref().fmt(f)
     }
 }
+
+impl<'a> TryFrom<&'a CStr> for &'a NullTerminatedStr {
+    type Error = Utf8Error;
+
+    fn try_from(cstr: &'a CStr) -> Result<Self, Self::Error> {
+        NullTerminatedStr::from_cstr(cstr)
+    }
+}
