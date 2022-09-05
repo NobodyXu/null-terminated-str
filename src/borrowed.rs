@@ -6,6 +6,8 @@ use std::{
     str::{from_utf8, from_utf8_unchecked, Utf8Error},
 };
 
+use super::NullTerminatedString;
+
 const fn report_err() -> u8 {
     const EMPTY_ARR: [u8; 0] = [];
     #[allow(unconditional_panic)]
@@ -111,5 +113,14 @@ impl<'a> TryFrom<&'a CStr> for &'a NullTerminatedStr {
 
     fn try_from(cstr: &'a CStr) -> Result<Self, Self::Error> {
         NullTerminatedStr::from_cstr(cstr)
+    }
+}
+
+impl ToOwned for NullTerminatedStr {
+    type Owned = NullTerminatedString;
+
+    fn to_owned(&self) -> Self::Owned {
+        let cstring = self.as_c_str().to_owned();
+        unsafe { NullTerminatedString::from_cstring_unchecked(cstring) }
     }
 }
