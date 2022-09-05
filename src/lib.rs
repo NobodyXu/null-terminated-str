@@ -4,7 +4,7 @@ use std::{
     str::{from_utf8, from_utf8_unchecked, Utf8Error},
 };
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 #[repr(transparent)]
 pub struct NullTerminatedStr(CStr);
 
@@ -110,7 +110,7 @@ impl Deref for NullTerminatedStr {
     }
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct NullTerminatedString(CString);
 
 impl From<&str> for NullTerminatedString {
