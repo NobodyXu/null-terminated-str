@@ -27,6 +27,7 @@ impl Error for NullStringFromUtf8Error {
 }
 
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[repr(transparent)]
 pub struct NullTerminatedString(CString);
 
 impl NullTerminatedString {
