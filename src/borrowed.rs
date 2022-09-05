@@ -8,8 +8,8 @@ use std::{
 
 use super::NullTerminatedString;
 
-const fn report_err() -> u8 {
-    const EMPTY_ARR: [u8; 0] = [];
+const fn report_err() -> &'static NullTerminatedStr {
+    const EMPTY_ARR: [&NullTerminatedStr; 0] = [];
     #[allow(unconditional_panic)]
     EMPTY_ARR[0]
 }
@@ -38,16 +38,13 @@ impl NullTerminatedStr {
         Ok(unsafe { Self::from_cstr_unchecked(cstr) })
     }
 
-    /// This function creates a `NullTerminatedStr`
-    /// from `s` which must have only one null byte
+    /// Return `true` if the str has and only has one null byte
     /// at the end of the string.
-    ///
-    /// If not, then this function would panic.
-    pub const fn from_const_str(s: &str) -> &Self {
+    const fn is_null_terminated(s: &str) -> bool {
         let bytes = s.as_bytes();
 
         if bytes.is_empty() {
-            report_err();
+            return false;
         }
 
         let mut i = 0;
@@ -55,18 +52,31 @@ impl NullTerminatedStr {
 
         // Check last byte is null byte
         if bytes[n] != b'\0' {
-            report_err();
+            return false;
         }
 
         // Ensure there is no internal null byte.
         while i < n {
             if bytes[i] == b'\0' {
-                report_err();
+                return false;
             }
             i += 1;
         }
 
-        unsafe { Self::from_cstr_unchecked(CStr::from_bytes_with_nul_unchecked(bytes)) }
+        true
+    }
+
+    /// This function creates a `NullTerminatedStr`
+    /// from `s` which must have only one null byte
+    /// at the end of the string.
+    ///
+    /// If not, then this function would panic.
+    pub const fn from_const_str(s: &str) -> &Self {
+        if let Some(null_str) = Self::try_from_str(s) {
+            null_str
+        } else {
+            report_err()
+        }
     }
 
     /// This function tries creates a `NullTerminatedStr`
@@ -74,30 +84,14 @@ impl NullTerminatedStr {
     /// at the end of the string.
     ///
     /// If not, then this function would return `None`.
-    pub fn try_from_str(s: &str) -> Option<&Self> {
-        let bytes = s.as_bytes();
-
-        if bytes.is_empty() {
-            return None;
+    pub const fn try_from_str(s: &str) -> Option<&Self> {
+        if Self::is_null_terminated(s) {
+            Some(unsafe {
+                Self::from_cstr_unchecked(CStr::from_bytes_with_nul_unchecked(s.as_bytes()))
+            })
+        } else {
+            None
         }
-
-        let mut i = 0;
-        let n = bytes.len() - 1;
-
-        // Check last byte is null byte
-        if bytes[n] != b'\0' {
-            return None;
-        }
-
-        // Ensure there is no internal null byte.
-        while i < n {
-            if bytes[i] == b'\0' {
-                return None;
-            }
-            i += 1;
-        }
-
-        Some(unsafe { Self::from_cstr_unchecked(CStr::from_bytes_with_nul_unchecked(bytes)) })
     }
 }
 
