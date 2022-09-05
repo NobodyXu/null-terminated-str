@@ -6,6 +6,13 @@ use super::NullTerminatedStr;
 pub struct NullTerminatedString(CString);
 
 impl NullTerminatedString {
+    /// # Safety
+    ///
+    /// `cstring` (excluding the null byte) must be valid utf-8 str.
+    pub const unsafe fn from_cstring_unchecked(cstring: CString) -> Self {
+        Self(cstring)
+    }
+
     pub fn from_cstring(cstring: CString) -> Result<Self, Utf8Error> {
         NullTerminatedStr::from_cstr(&cstring)?;
         Ok(Self(cstring))
