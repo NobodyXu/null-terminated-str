@@ -13,7 +13,7 @@ of the non-terminated string to avoid frequent allocation.
 """
 repository = "https://github.com/NobodyXu/null-terminated-str"
 
-keywords = ["ffi", "string", "null-terminated-string"]
+keywords = ["ffi", "string", "c-str"]
 categories = ["api-bindings"]
 
 [dependencies]
