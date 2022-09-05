@@ -1,4 +1,4 @@
-use std::{error::Error, ffi::CString, fmt, ops::Deref, str::Utf8Error};
+use std::{borrow::Borrow, error::Error, ffi::CString, fmt, ops::Deref, str::Utf8Error};
 
 use super::NullTerminatedStr;
 
@@ -120,5 +120,11 @@ impl Deref for NullTerminatedString {
 impl fmt::Display for NullTerminatedString {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         self.deref().fmt(f)
+    }
+}
+
+impl Borrow<NullTerminatedStr> for NullTerminatedString {
+    fn borrow(&self) -> &NullTerminatedStr {
+        self.deref()
     }
 }
