@@ -184,3 +184,9 @@ impl<'a> From<&'a NullTerminatedStr> for &'a CStr {
         null_str.as_c_str()
     }
 }
+
+impl AsRef<NullTerminatedStr> for NullTerminatedStr {
+    fn as_ref(&self) -> &NullTerminatedStr {
+        self
+    }
+}
