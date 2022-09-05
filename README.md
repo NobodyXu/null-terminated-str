@@ -8,4 +8,14 @@
 
 [![docs](https://docs.rs/null-terminated-str/badge.svg)](https://docs.rs/null-terminated-str)
 
-Provides null terminated str that is compatible with `std::ffi::CStr`.
+Provides null terminated utf-8 str `NullTerminatedStr` (borrowed) and
+`NullTerminatedString` (owned) that is compatible with
+ - `std::ffi::CStr`
+ - `std::ffi::CString`
+ - `str`
+ - `String`
+
+Also provides `const_null_terminated_str!` to create `NullTerminatedStr`
+at compile time and `IntoNullTerminatedString` that accepts `&str`,
+`String`, `&NullTerminatedStr` and `NullTerminatedString` to avoid
+frequent allocation in FFI call.
