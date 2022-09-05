@@ -5,6 +5,7 @@ mod owned;
 pub use owned::{NullStringFromUtf8Error, NullTerminatedString};
 
 mod into_null_terminated_string;
+pub use into_null_terminated_string::IntoNullTerminatedString;
 
 /// Create a null-terminated utf-8 str as an rvalue.
 /// Appends a NUL byte to the passed string.
