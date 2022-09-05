@@ -124,3 +124,9 @@ impl ToOwned for NullTerminatedStr {
         unsafe { NullTerminatedString::from_cstring_unchecked(cstring) }
     }
 }
+
+impl<'a> From<&'a NullTerminatedStr> for &'a CStr {
+    fn from(null_str: &'a NullTerminatedStr) -> Self {
+        null_str.as_c_str()
+    }
+}
