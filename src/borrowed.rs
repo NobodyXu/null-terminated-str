@@ -1,4 +1,5 @@
 use std::{
+    cmp::Ordering,
     ffi::CStr,
     ops::Deref,
     str::{from_utf8, from_utf8_unchecked, Utf8Error},
@@ -71,5 +72,29 @@ impl Deref for NullTerminatedStr {
 
     fn deref(&self) -> &Self::Target {
         unsafe { from_utf8_unchecked(self.0.to_bytes()) }
+    }
+}
+
+impl PartialEq<str> for NullTerminatedStr {
+    fn eq(&self, other: &str) -> bool {
+        self.deref().eq(other)
+    }
+}
+
+impl PartialEq<NullTerminatedStr> for str {
+    fn eq(&self, other: &NullTerminatedStr) -> bool {
+        self.eq(other.deref())
+    }
+}
+
+impl PartialOrd<str> for NullTerminatedStr {
+    fn partial_cmp(&self, other: &str) -> Option<Ordering> {
+        self.deref().partial_cmp(other)
+    }
+}
+
+impl PartialOrd<NullTerminatedStr> for str {
+    fn partial_cmp(&self, other: &NullTerminatedStr) -> Option<Ordering> {
+        self.partial_cmp(other.deref())
     }
 }
