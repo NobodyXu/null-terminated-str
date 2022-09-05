@@ -196,3 +196,9 @@ impl AsRef<str> for NullTerminatedStr {
         self.deref()
     }
 }
+
+impl AsRef<CStr> for NullTerminatedStr {
+    fn as_ref(&self) -> &CStr {
+        self.as_c_str()
+    }
+}
