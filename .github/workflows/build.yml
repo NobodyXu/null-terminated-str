@@ -1,0 +1,44 @@
+name: Build
+
+on:
+  pull_request:
+    paths-ignore:
+      - 'README.md'
+      - 'LICENSE'
+      - '.gitignore'
+  push:
+    paths-ignore:
+      - 'README.md'
+      - 'LICENSE'
+      - '.gitignore'
+
+env:
+  CARGO_TERM_COLOR: always
+  CARGO_UNSTABLE_SPARSE_REGISTRY: "true"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+ 
+      - name: Configure toolchain
+        run: |
+          rustup toolchain install --profile minimal --no-self-update nightly
+          rustup default nightly
+
+      - name: Generate Cargo.lock
+        run: cargo +nightly update
+
+      - name: Configure caching
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            target/
+          key: cargo-$${{ hashFiles('**/Cargo.lock') }}
+
+      - name: Test
+        run: cargo test
