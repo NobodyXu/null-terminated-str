@@ -44,6 +44,28 @@ impl NullTerminatedString {
             Ok(Self(cstring))
         }
     }
+
+    pub fn from_cstring_lossy(cstring: CString) -> Self {
+        Self::from_cstring(cstring).unwrap_or_else(|NullStringFromUtf8Error { cstring, .. }| {
+            // bytes without null byte
+            let bytes = cstring.into_bytes();
+
+            // This would replace any invalid utf-8 sequence with
+            // `std::char::REPLACEMENT_CHARACTER`, which does not
+            // contain null byte.
+            let string = String::from_utf8_lossy(&bytes).into_owned();
+
+            // Convert it back into bytes
+            let bytes = string.into_bytes();
+
+            // from_vec_unchecked appends the trailing '\0'
+            //
+            // Safety:
+            //
+            // The string cannot have any null byte.
+            Self(unsafe { CString::from_vec_unchecked(bytes) })
+        })
+    }
 }
 
 impl From<&str> for NullTerminatedString {
