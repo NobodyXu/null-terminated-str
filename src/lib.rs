@@ -2,7 +2,7 @@ mod borrowed;
 pub use borrowed::NullTerminatedStr;
 
 mod owned;
-pub use owned::NullTerminatedString;
+pub use owned::{NullStringFromUtf8Error, NullTerminatedString};
 
 /// Create a null-terminated utf-8 str as an rvalue.
 /// Appends a NUL byte to the passed string.

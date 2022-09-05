@@ -1,6 +1,30 @@
-use std::{ffi::CString, fmt, ops::Deref, str::Utf8Error};
+use std::{error::Error, ffi::CString, fmt, ops::Deref, str::Utf8Error};
 
 use super::NullTerminatedStr;
+
+#[derive(Clone, Debug)]
+pub struct NullStringFromUtf8Error {
+    cstring: CString,
+    utf8_err: Utf8Error,
+}
+
+impl NullStringFromUtf8Error {
+    pub fn into_inner(self) -> (CString, Utf8Error) {
+        (self.cstring, self.utf8_err)
+    }
+}
+
+impl fmt::Display for NullStringFromUtf8Error {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        self.utf8_err.fmt(f)
+    }
+}
+
+impl Error for NullStringFromUtf8Error {
+    fn source(&self) -> Option<&(dyn Error + 'static)> {
+        Some(&self.utf8_err)
+    }
+}
 
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct NullTerminatedString(CString);
@@ -13,9 +37,12 @@ impl NullTerminatedString {
         Self(cstring)
     }
 
-    pub fn from_cstring(cstring: CString) -> Result<Self, Utf8Error> {
-        NullTerminatedStr::from_cstr(&cstring)?;
-        Ok(Self(cstring))
+    pub fn from_cstring(cstring: CString) -> Result<Self, NullStringFromUtf8Error> {
+        if let Err(utf8_err) = NullTerminatedStr::from_cstr(&cstring) {
+            Err(NullStringFromUtf8Error { cstring, utf8_err })
+        } else {
+            Ok(Self(cstring))
+        }
     }
 }
 
