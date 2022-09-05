@@ -1,6 +1,7 @@
 use std::{
     cmp::Ordering,
     ffi::CStr,
+    fmt,
     ops::Deref,
     str::{from_utf8, from_utf8_unchecked, Utf8Error},
 };
@@ -96,5 +97,11 @@ impl PartialOrd<str> for NullTerminatedStr {
 impl PartialOrd<NullTerminatedStr> for str {
     fn partial_cmp(&self, other: &NullTerminatedStr) -> Option<Ordering> {
         self.partial_cmp(other.deref())
+    }
+}
+
+impl fmt::Display for NullTerminatedStr {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        self.deref().fmt(f)
     }
 }
