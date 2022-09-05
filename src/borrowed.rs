@@ -84,6 +84,35 @@ impl NullTerminatedStr {
     /// at the end of the string.
     ///
     /// If not, then this function would return `None`.
+    ///
+    /// ```rust
+    /// use null_terminated_str::NullTerminatedStr;
+    /// use std::ops::Deref;
+    ///
+    /// // Empty string is rejected
+    /// assert_eq!(
+    ///     NullTerminatedStr::try_from_str(""),
+    ///     None,
+    /// );
+    ///
+    /// // String without null byte is rejected
+    /// assert_eq!(
+    ///     NullTerminatedStr::try_from_str("ha"),
+    ///     None,
+    /// );
+    ///
+    /// // String with internal null byte is rejected
+    /// assert_eq!(
+    ///     NullTerminatedStr::try_from_str("h\0a\0"),
+    ///     None,
+    /// );
+    ///
+    /// // String without trailing null byte is also rejected
+    /// assert_eq!(
+    ///     NullTerminatedStr::try_from_str("h\0a"),
+    ///     None,
+    /// );
+    /// ```
     pub const fn try_from_str(s: &str) -> Option<&Self> {
         if Self::is_null_terminated(s) {
             Some(unsafe {
