@@ -1,9 +1,16 @@
-use std::{ffi::CString, fmt, ops::Deref};
+use std::{ffi::CString, fmt, ops::Deref, str::Utf8Error};
 
 use super::NullTerminatedStr;
 
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct NullTerminatedString(CString);
+
+impl NullTerminatedString {
+    pub fn from_cstring(cstring: CString) -> Result<Self, Utf8Error> {
+        NullTerminatedStr::from_cstr(&cstring)?;
+        Ok(Self(cstring))
+    }
+}
 
 impl From<&str> for NullTerminatedString {
     fn from(s: &str) -> Self {
