@@ -68,6 +68,37 @@ impl NullTerminatedStr {
 
         unsafe { Self::from_cstr_unchecked(CStr::from_bytes_with_nul_unchecked(bytes)) }
     }
+
+    /// This function tries creates a `NullTerminatedStr`
+    /// from `s` which must have only one null byte
+    /// at the end of the string.
+    ///
+    /// If not, then this function would return `None`.
+    pub fn try_from_str(s: &str) -> Option<&Self> {
+        let bytes = s.as_bytes();
+
+        if bytes.is_empty() {
+            return None;
+        }
+
+        let mut i = 0;
+        let n = bytes.len() - 1;
+
+        // Check last byte is null byte
+        if bytes[n] != b'\0' {
+            return None;
+        }
+
+        // Ensure there is no internal null byte.
+        while i < n {
+            if bytes[i] == b'\0' {
+                return None;
+            }
+            i += 1;
+        }
+
+        Some(unsafe { Self::from_cstr_unchecked(CStr::from_bytes_with_nul_unchecked(bytes)) })
+    }
 }
 
 impl Deref for NullTerminatedStr {
