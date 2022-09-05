@@ -1,7 +1,7 @@
 use std::{
     ffi::{CStr, CString},
     ops::Deref,
-    str::from_utf8_unchecked,
+    str::{from_utf8, from_utf8_unchecked, Utf8Error},
 };
 
 #[derive(Debug)]
@@ -21,6 +21,11 @@ impl NullTerminatedStr {
         // Safety: NullTerminatedStr is transparent
         // newtype of CStr
         &*(cstr as *const CStr as *const Self)
+    }
+
+    pub fn from_cstr(cstr: &CStr) -> Result<&Self, Utf8Error> {
+        from_utf8(cstr.to_bytes())?;
+        Ok(unsafe { Self::from_cstr_unchecked(cstr) })
     }
 }
 
