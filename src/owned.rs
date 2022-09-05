@@ -1,4 +1,4 @@
-use std::{ffi::CString, ops::Deref};
+use std::{ffi::CString, fmt, ops::Deref};
 
 use super::NullTerminatedStr;
 
@@ -33,5 +33,11 @@ impl Deref for NullTerminatedString {
 
     fn deref(&self) -> &Self::Target {
         unsafe { NullTerminatedStr::from_cstr_unchecked(self.0.as_c_str()) }
+    }
+}
+
+impl fmt::Display for NullTerminatedString {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        self.deref().fmt(f)
     }
 }
