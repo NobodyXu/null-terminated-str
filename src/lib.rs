@@ -1,4 +1,5 @@
 #![doc = include_str!("../README.md")]
+#![cfg_attr(docsrs, feature(auto_doc_cfg))]
 
 mod borrowed;
 pub use borrowed::NullTerminatedStr;
