@@ -49,8 +49,8 @@ impl<'de> Deserialize<'de> for NullTerminatedString {
 
 #[cfg(test)]
 mod tests {
-    use crate::const_null_terminated_str;
-    use serde_test::{assert_tokens, Token};
+    use crate::{const_null_terminated_str, NullTerminatedStr, NullTerminatedString};
+    use serde_test::{assert_de_tokens, assert_de_tokens_error, assert_tokens, Token};
 
     #[test]
     fn test_de_ser_null_terminated_str() {
@@ -70,5 +70,26 @@ mod tests {
 
         def_str_test!("");
         def_str_test!("abcde");
+    }
+
+    #[test]
+    fn test_de_ser_null_terminated_str_err() {
+        let strs: &[&str] = &["", "abcde"];
+
+        for s in strs {
+            let byte = s.as_bytes();
+            assert_de_tokens_error::<&NullTerminatedStr>(
+                &[Token::BorrowedBytes(byte)],
+                &format!(
+                    r#"invalid value: string "{}", expected Expected null terminated utf-8 str"#,
+                    s
+                ),
+            );
+
+            assert_de_tokens::<NullTerminatedString>(
+                &NullTerminatedString::from(*s),
+                &[Token::BorrowedBytes(byte)],
+            );
+        }
     }
 }
