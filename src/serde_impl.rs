@@ -1,3 +1,5 @@
+use std::ops::Deref;
+
 use serde::{
     de::{Deserialize, Deserializer, Error, Unexpected},
     Serialize, Serializer,
@@ -10,7 +12,7 @@ impl Serialize for NullTerminatedStr {
     where
         S: Serializer,
     {
-        self.as_c_str().serialize(serializer)
+        serializer.serialize_bytes(self.as_c_str().to_bytes_with_nul())
     }
 }
 
@@ -19,7 +21,7 @@ impl Serialize for NullTerminatedString {
     where
         S: Serializer,
     {
-        self.as_c_str().serialize(serializer)
+        self.deref().serialize(serializer)
     }
 }
 
