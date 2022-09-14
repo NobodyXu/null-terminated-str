@@ -44,3 +44,29 @@ impl<'de> Deserialize<'de> for NullTerminatedString {
         Ok(NullTerminatedString::from(s))
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use crate::const_null_terminated_str;
+    use serde_test::{assert_tokens, Token};
+
+    #[test]
+    fn test_de_ser_null_terminated_str() {
+        macro_rules! def_str_test {
+            ($s:expr) => {
+                assert_tokens(
+                    &const_null_terminated_str!($s),
+                    &[Token::BorrowedBytes(concat!($s, "\0").as_bytes())],
+                );
+
+                assert_tokens(
+                    &(const_null_terminated_str!($s)).to_owned(),
+                    &[Token::BorrowedBytes(concat!($s, "\0").as_bytes())],
+                );
+            };
+        }
+
+        def_str_test!("");
+        def_str_test!("abcde");
+    }
+}
