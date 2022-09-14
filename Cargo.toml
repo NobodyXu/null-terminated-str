@@ -17,3 +17,4 @@ keywords = ["ffi", "string", "c-str"]
 categories = ["api-bindings"]
 
 [dependencies]
+serde = { version = "1.0.144", optional = true }
