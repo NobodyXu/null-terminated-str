@@ -17,3 +17,11 @@ keywords = ["ffi", "string", "c-str"]
 categories = ["api-bindings"]
 
 [dependencies]
+serde = { version = "1.0.144", optional = true }
+
+[dev-dependencies]
+serde_test = "1.0.144"
+
+[package.metadata.docs.rs]
+all-features = true
+rustdoc-args = ["--cfg", "docsrs"]
